@@ -2,6 +2,7 @@
 -- Here's a fairly simple Player that will simply walk around and shoot at people sometimes.
 -- This will give a good example on the useage of the Glaces. I will be refering them as Players throughout the code.
 
+-- Just localizing some stuff 
 local random = math.random
 
 
@@ -17,13 +18,14 @@ local ammotranslation = {
 
 }
 
+-- To start off, we encase the entire player in their own function to spawn them.
 function SpawnTestGlacePlayer()
-    local ply = Glace_CreatePlayer( "Arbiter" ,nil,nil,"arbiter.jpg") -- We create a Player with the name Avui with the kleiner model since the model arg is nil. We also give him a profile picture. See glace_generalbot_base.lua
+    local ply = Glace_CreatePlayer( "Avui" , nil, "GLACERANDOM" ) -- We create a Player with the name Avui with the kleiner model since the model arg is nil. We also set GLACERANDOM so he gets a random profile picture. See glace_generalbot_base.lua
 
     -- We now start making the AI
 
     ply:Glace_SetAutoReload( true ) -- Make the Player automatically reload when he runs out of ammo
-    ply:Glace_SwitchWeapon("weapon_357")
+    ply:Glace_SwitchWeapon("weapon_357") -- We make them just use the 357 Magnum for this example
     ply:Glace_SetThinkTime( 0.3 ) -- This Player's Glace_Think hook will now only run after every 0.3 second
 
 
@@ -66,7 +68,7 @@ function SpawnTestGlacePlayer()
     function ply:Glace_OnHurt( attacker, hp, damage ) -- Play a generic pain sound
         if attacker == self then return end
 
-        self:EmitSound( "vo/npc/male01/pain0" .. math.random( 9 ) .. ".wav" )
+        self:EmitSound( "vo/npc/male01/pain0" .. random( 9 ) .. ".wav" )
 
         if random(1,5) == 1 then -- Attack our attacker if we want to
             self:Glace_CancelMove() 
@@ -222,3 +224,7 @@ function SpawnTestGlacePlayer()
     
 
 end
+
+
+-- We now "register" the player as a console command so we can spawn them
+concommand.Add("glacebase_spawntestplayer",SpawnTestGlacePlayer)
