@@ -94,15 +94,14 @@ function SpawnTestGlacePlayer()
 
         if self:Glace_GetState() == "incombat" and !IsValid(self.Glace_Enemy) then
             self:Glace_Sprint( false )
-            self:Glace_Attack1( false, 0.05 )
             self:Glace_StopFace()
             self:Glace_SetState( "idle" )
             self:Glace_SetEnemy(nil)
         end
 
-        if IsValid( self.Glace_Enemy ) then
+        if IsValid( self.Glace_Enemy ) and self:Glace_CanSee( self.Glace_Enemy ) then
 
-            self:Glace_Attack1( self:Glace_CanSee(self.Glace_Enemy), 0.05 )
+            self:Glace_AddKeyPress( IN_ATTACK )
             return 
         end -- If the enemy is valid then don't run the code below
 
@@ -134,7 +133,6 @@ function SpawnTestGlacePlayer()
         
         if self:Glace_GetState() == "idle" then -- Idle state will just be wandering
 
-            self:Glace_Attack1( false, 0.05 )
             self:Glace_Sprint( false )
 
             local pos = self:Glace_GetRandomPosition( 2000 ) -- Get a random spot that we want to go to
@@ -149,7 +147,7 @@ function SpawnTestGlacePlayer()
                       
                 
 
-                self:Glace_Jump()
+                self:Glace_AddKeyPress( IN_JUMP )
             end, "bhop", 30 ) 
 
             self:Glace_Sprint( true )
@@ -178,7 +176,7 @@ function SpawnTestGlacePlayer()
                         
                      
     
-                    self:Glace_Jump()
+                    self:Glace_AddKeyPress( IN_JUMP )
                 end, "bhop", 30 ) 
 
                 self:Glace_MoveToPos( medkit, nil, nil, 3, true ) -- Go to the medkit and have the pathfinder wait for the player
@@ -207,7 +205,7 @@ function SpawnTestGlacePlayer()
                         
                      
     
-                    self:Glace_Jump()
+                    self:Glace_AddKeyPress( IN_JUMP )
                 end, "bhop", 30 ) 
 
                 self:Glace_MoveToPos( ammo, nil, 10, 3, true )
