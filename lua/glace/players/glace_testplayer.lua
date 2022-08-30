@@ -76,6 +76,7 @@ function SpawnTestGlacePlayer()
 
     end
 
+    -- Now we create our normal Think hook
     function ply:Glace_Think()
 
         if random(50) == 1 then
@@ -87,19 +88,19 @@ function SpawnTestGlacePlayer()
             self:Glace_CancelMove()
         end
 
-        if IsValid(self:GetActiveWeapon()) and !self:GetActiveWeapon():HasAmmo() and self:Glace_GetState() != "findammo" then
+        if IsValid(self:GetActiveWeapon()) and !self:GetActiveWeapon():HasAmmo() and self:Glace_GetState() != "findammo" then -- If we run out of ammo, then find some
             self:Glace_SetState("findammo")
             self:Glace_CancelMove()
         end
 
-        if self:Glace_GetState() == "incombat" and !IsValid(self.Glace_Enemy) then
+        if self:Glace_GetState() == "incombat" and !IsValid(self.Glace_Enemy) then -- If our enemy isn't valid then just go back to normal
             self:Glace_Sprint( false )
             self:Glace_StopFace()
             self:Glace_SetState( "idle" )
             self:Glace_SetEnemy(nil)
         end
 
-        if IsValid( self.Glace_Enemy ) and self:Glace_CanSee( self.Glace_Enemy ) then
+        if IsValid( self.Glace_Enemy ) and self:Glace_CanSee( self.Glace_Enemy ) then -- Shoot at our target if we can see em
 
             self:Glace_AddKeyPress( IN_ATTACK )
             return 
@@ -140,6 +141,8 @@ function SpawnTestGlacePlayer()
 
         elseif self:Glace_GetState() == "incombat" and IsValid( self:Glace_GetEnemy() ) then -- Combat State
 
+
+            -- This timer makes the player bhop
             self:Glace_Timer( 0.4, function()
                 if !IsValid( self:Glace_GetEnemy() ) then return "remove" end
                 if self:Glace_GetRangeSquaredTo( self:Glace_GetEnemy() ) <= ( 200 * 200 ) then return "remove" end
@@ -194,7 +197,8 @@ function SpawnTestGlacePlayer()
                 break
             end
             
-            if IsValid(ammo) then
+
+            if IsValid(ammo) then -- Go grab that ammo
                 self:Glace_Sprint( true )
                 self:Glace_StopFace()
 
