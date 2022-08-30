@@ -4,12 +4,19 @@ include("glace/glace_functions.lua")
 -- Creates a bot
 
 
-function Glace_CreatePlayer( name, model, pos, profilepicture )
+-- name | The name the player should have
+-- model | The model the player should spawn with
+-- profilepicture | The image file with extension from materials/glacebase/profilepictures/ the player should use as their profile picture
+
+function Glace_CreatePlayer( name, model, profilepicture )
     if !game.SinglePlayer() and player.GetCount() < game.MaxPlayers() then 
         if !navmesh.IsLoaded() then PrintMessage(HUD_PRINTTALK,"Glace Base Warning: Map has no Navigation Mesh! Preventing Spawn..") return end
 
 
         local ply = player.CreateNextBot( name )
+
+        if !IsValid( ply ) then return end
+
         ply.IsGlacePlayer = true
         ply._GlaceThinkTime = 0
 
@@ -21,15 +28,10 @@ function Glace_CreatePlayer( name, model, pos, profilepicture )
 
         end
 
-        -- The profile picture file name.
-        -- Profile Pictures are found in, garrysmod/materials/glacebase/profilepictures.
-        -- Any custom profile pictures should be located in that folder as well. Make sure any other client has a way of receiving them!
+        -- Apply the profile picture
 
-        -- To set the player's Profile Picture, just paste the file name and extension of a image from garrysmod/materials/glacebase/profilepictures in the profile picture arg or you can input GLACERANDOM for a random profile picture in the profile picture arg
-        -- See glace_testplayer.lua to see a example
+        -- All you have to do is provide a image name with its file extension from materials/glacebase/profilepictures/ in the profilepicture arg to give this player a profile picture.
 
-        -- NOTE THAT VOICE CHAT FADE OUT WILL LOOK WEIRD!
-        -- I haven't figured out a way to fix this
         timer.Simple( 0, function()
 
             ply:SetNW2Bool( "glacebase_isglaceplayer", true )
@@ -47,9 +49,8 @@ function Glace_CreatePlayer( name, model, pos, profilepicture )
 
         end)
 
-        if pos and isvector( pos ) then ply:SetPos( pos ) end
 
-            ply.threadthink = coroutine.create(function()  -- Kick off the coroutine thread
+            ply.threadthink = coroutine.create( function()  -- Kick off the coroutine thread
             while true do
                 if isfunction( ply.Glace_ThreadedThink ) then
                     ply:Glace_ThreadedThink()
