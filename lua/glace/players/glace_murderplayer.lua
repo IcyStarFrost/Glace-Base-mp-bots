@@ -21,14 +21,96 @@
 
 -- End of notes
 
-local zetanames = file.Read("zetaplayerdata/names.json","DATA")
 
-zetanames = util.JSONToTable(zetanames)
+-- Temporary list of names
+local names = {
+    "Beta",
+	"Generic Name 1",
+	"Ze Uberman",
+	"Q U A N T U M P H Y S I C S",
+	"portable fridge",
+	"Methman456",
+	"i rdm kids for breakfast",
+	"Cheese Adiction Therapist",
+	"private hoovy",
+	"Socks with Sandals",
+	"Solar",
+	"AdamYeBoi",
+	"troll",
+	"de_struction and de_fuse",
+	"de_rumble",
+	"decoymail",
+	"Damian",
+	"BrandontheREDSpy",
+	"Braun",
+	"brent13",
+	"BrokentoothMarch",
+	"BruH",
+	"BudLightVirus",
+	"Call of Putis",
+	"CanadianBeaver",
+	"Cake brainer",
+	"cant scream in space",
+	"CaptGravyBoness",
+	"CaraKing09",
+	"CarbonTugboat",
+	"CastHalo",
+	"cate",
+	"ccdrago56",
+	"cduncan05",
+	"Chancellor_Ant",
+	"Changthunderwang",
+	"Charstorms",
+	"Ch33kCLaper69",
+	"Get Good Get Lmao Box",
+	"Atomic",
+	"Audrey",
+	"Auxometer",
+	"A Wise Author",
+	"Awtrey516",
+	"Aytx",
+	"BabaBooey",
+	"BackAlleyDealerMan",
+	"BalieyeatsPizza",
+	"ballzackmonster",
+	"Banovinski",
+	"bardochib",
+	"BBaluka",
+	"Bean man",
+	"Bear",
+	"Bearman_18",
+	"beeflover100",
+	"Albeon Stormhammer",
+	"Andromedus",
+	"Anilog",
+	"Animus",
+	"Sorry_an_Error_has_Occurred",
+	"I am the Spy",
+	"engineer gaming",
+	"Ze Uberman",
+	"Regret",
+	"Sora",
+	"Sky",
+	"Scarf",
+	"Graves",
+	"bruh moment",
+	"Garrys Mod employee",
+	"i havent eaten in 69 days",
+	"DOORSTUCK89",
+	"PickUp That Can Cop",
+	"Never gonna give you up",
+	"if you are reading this, ur mom gay ",
+	"The Lemon Arsonist",
+	"Cave Johnson",
+	"Chad",
+	"Speedy",
+	"Alan"
+}
 
 local random = math.random
 
 function SpawnGlaceMurderPlayer()
-    local ply = Glace_CreatePlayer( zetanames[ random( #zetanames ) ], nil, nil, "GLACERANDOM" )
+    local ply = Glace_CreatePlayer( names[ random( #names ) ], nil, nil, "GLACERANDOM" )
 
     ply:Glace_SetThinkTime( 0.1 )
 
@@ -337,3 +419,7 @@ function SpawnGlaceMurderPlayer()
 
 
 end
+
+
+-- "Register" the player so we can spawn them
+concommand.Add("glacebase_spawnglacemurderplayer",SpawnGlaceMurderPlayer)
