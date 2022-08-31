@@ -31,6 +31,7 @@ if SERVER then
     end
 
 
+    concommand.Add("glacebase_autoeditnav", GlaceBase_AutoEditNavmesh)
     concommand.Add("glacebase_kickbots", GlaceBase_KickAllBots)
 
 end
