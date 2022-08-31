@@ -1,7 +1,8 @@
 
 
 local IsValid = IsValid
-
+local pairs = pairs
+local table = table
 
 
 hook.Add( "PlayerDeath", "GlaceBase_PlayerDeath", function(ply,inflictor,attacker) -- You are ded not big soup rice
@@ -59,9 +60,29 @@ hook.Add( "StartCommand", "GlaceBase_UserCommand", function(ply,cmd) -- Can be c
         end
     end
 
-    if ply._GlaceRequestKeyPress then 
-        cmd:AddKey( ply._GlaceRequestKeyPress )
-        timer.Simple( 0.01, function() cmd:RemoveKey( ply._GlaceRequestKeyPress ) ply._GlaceRequestKeyPress = nil  end )
+    if !table.IsEmpty(ply._GlaceKeyQueue) then 
+
+        for k, v in pairs( ply._GlaceKeyQueue ) do
+            
+            cmd:AddKey( v )
+
+            if !v then
+
+                timer.Simple( 0.01, function() cmd:RemoveKey( v ) end )
+
+            end
+
+            ply._GlaceKeyQueue[ k ] = nil
+        end
+
+    end
+
+    if !table.IsEmpty( ply._GlaceHeldKeyQueue ) then 
+        for k, v in pairs( ply._GlaceHeldKeyQueue ) do
+            
+            cmd:AddKey( v )
+
+        end
     end
 
 

@@ -19,6 +19,8 @@ function Glace_CreatePlayer( name, model, profilepicture )
 
         ply.IsGlacePlayer = true
         ply._GlaceThinkTime = 0
+        ply._GlaceKeyQueue = {}
+        ply._GlaceHeldKeyQueue = {}
 
         
 

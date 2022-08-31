@@ -143,23 +143,37 @@ function SpawnGlaceMurderPlayer()
     end 
 
     -- If we get stuck just move backwards for a moment and hope we get out
-    -- If we are in water too, then go forward for a longer time so we hopefully get out by being "jumped" onto a ledge
     function ply:Glace_OnStuck()
         GlaceBase_DebugPrint( "Player got stuck" )
 
         self:SetCollisionGroup( COLLISION_GROUP_WORLD )
         
-        self:Glace_SetForwardMove( -self:GetWalkSpeed() )
+        self:Glace_SetForwardMove( self:GetWalkSpeed() ) 
 
-        self:Glace_Timer( 5, function()
+        self:Glace_AddKeyPress( IN_DUCK, true )
+        self:Glace_AddKeyPress( IN_JUMP ) 
+
+        self:Glace_Timer( 3, function()
 
             self:SetCollisionGroup( COLLISION_GROUP_NONE )
 
         end, "unstucknocollide", 1 )
 
+
+        self:Glace_Timer( 1, function()
+
+            self:Glace_SetForwardMove() -- Stop the override movement
+            self:Glace_AddKeyPress( IN_DUCK ) -- Releases the hold on the crouch key
+
+        end, "crouchrelease", 1 )
+
+
+        
         self:Glace_Timer( 0.5, function()
+
+            
             self:Glace_CancelMove()
-            self:Glace_SetForwardMove( nil )
+
         end )
     end
 

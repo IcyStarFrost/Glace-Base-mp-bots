@@ -37,8 +37,18 @@ function _GlaceSetupPlayerFunctions( ply ) -- ONLY USED IN THE Glace_CreatePlaye
     -- Simulates a press on the specified key. This basically runs CMoveData:AddKey( number keys ) and removes the key after a 0.01 delay
     -- See Enums/IN in the Garry's Mod Wiki for valid keys
 
-    function ply:Glace_AddKeyPress( inkeynum ) 
-        self._GlaceRequestKeyPress = inkeynum
+
+    -- shouldholdbool | If the specified key should be held
+    -- To remove a hold, just specify the key again without a true in shouldholdbool
+    function ply:Glace_AddKeyPress( inkeynum, shouldholdbool ) 
+
+        if !shouldholdbool then
+            self._GlaceKeyQueue[ inkeynum ] = inkeynum
+            self._GlaceHeldKeyQueue[ inkeynum ] = nil
+        else
+            self._GlaceHeldKeyQueue[ inkeynum ] = inkeynum
+        end
+        
     end
 
     function ply:Glace_SetAutoReload( bool ) -- If the Player should reload when their clip is empty. Note that this may override normal ply:Glace_AddKeyPress( IN_RELOAD ) reload requests
