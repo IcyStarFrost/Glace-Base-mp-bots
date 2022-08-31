@@ -2,7 +2,7 @@
 
 What is Glace Base? Glace Base is a base designed to make the creation of Fake Clients to be easier and have the same general workflow as making Nextbots. The hardest part of Fake Clients are handled by the Base allowing you to mainly worry on the AI of your Fake Client. 
 
-Glace Base features functions that Nextbots have by default and many other custom functions to add on.
+Glace Base features functions that Nextbots have by default and many other custom functions to add on. Note that the base is still a Work in Progress to it's not perfect yet
 
 ![alt text](https://cdn.discordapp.com/attachments/696733081763315803/1014288610788397056/20220823233325_1.jpg)
 
