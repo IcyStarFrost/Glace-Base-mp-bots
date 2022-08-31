@@ -136,6 +136,7 @@ end
 
 function ENT:MoveToPos() -- Basic move to position or follow entity code
     if isentity( self.MovePos ) and !IsValid( self.MovePos ) then return end
+    if !self.MovePos then return end
 
 	local path = Path( "Follow" )
 	path:SetMinLookAheadDistance( self.LookAhead or 100 )
