@@ -285,7 +285,7 @@ function SpawnGlaceMurderPlayer()
         if self:IsMurderer() then
 
             -- As time goes on, increase the chance the murderer will get murderous 
-            if CurTime() > murderagrocurtime then
+            if CurTime() > murderagrocurtime and murderagrochance > 3 then
                 murderagrochance = murderagrochance - 1
 
                 murderagrocurtime = CurTime() + 0.5
