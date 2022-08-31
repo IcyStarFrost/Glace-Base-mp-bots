@@ -496,6 +496,8 @@ function SpawnGlaceMurderPlayer()
 
 
             self:Glace_MoveToPos( gun, nil, nil, nil, true )
+
+            gun:SetPos( self:GetPos() )
             GlaceBase_DebugPrint( "Grabbed Dropped gun" )
 
             self.GlaceBystanderState = "wander"
