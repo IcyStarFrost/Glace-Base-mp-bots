@@ -292,7 +292,7 @@ function SpawnGlaceMurderPlayer()
                 return
             end
 
-            if random( 1, 40 ) == 1 then
+            if random( 1, 60 ) == 1 then
                 GlaceBase_DebugPrint( "Murder target check" )
 
                 local targetcheck = self:Glace_FindInSphere( 1000, function( ent ) if ent:IsPlayer() and ent:Alive() and ent != self and self:Glace_CanSee(ent) then return true end end ) 
