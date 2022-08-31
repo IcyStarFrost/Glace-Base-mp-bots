@@ -191,7 +191,7 @@ function ENT:MoveToPos() -- Basic move to position or follow entity code
 end
 
 function ENT:RemoveDB()
-    GlaceBase_DebugPrint(self.GlaceOwner," Pathfinder was removed \n"..debug.traceback())
+    --GlaceBase_DebugPrint(self.GlaceOwner," Pathfinder was removed \n"..debug.traceback())
     self:Remove()
 end
 
