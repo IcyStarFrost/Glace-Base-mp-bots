@@ -230,6 +230,10 @@ function _GlaceSetupPlayerFunctions( ply ) -- ONLY USED IN THE Glace_CreatePlaye
 
     ---- End of the Hooks ----
 
+
+
+    
+
     -- Default Nextbot function moved to the Glace base
     -- This must be used in the ply:Glace_ThreadedThink() function!
     function ply:Glace_PlaySequenceAndWait( name, speed )
