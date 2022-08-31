@@ -160,7 +160,7 @@ function SpawnTestGlacePlayer()
 
             self:Glace_Sprint( true )
             self:Glace_Face( self:Glace_GetEnemy() )
-            self:Glace_MoveToPos( pos, nil, nil, 3 )
+            self:Glace_MoveToPos( pos, nil, nil )
 
         elseif self:Glace_GetState() == "findmedkits" then -- Find a medkit or perish
 

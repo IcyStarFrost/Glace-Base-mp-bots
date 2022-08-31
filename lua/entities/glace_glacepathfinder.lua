@@ -152,7 +152,6 @@ function ENT:MoveToPos() -- Basic move to position or follow entity code
         if isentity( self.MovePos ) and !IsValid( self.MovePos ) then self.GlaceOwner._GlaceIsMoving = false return "failed" end
 
 
-		path:Update( self )
 
         if GetConVar( "developer" ):GetBool() then
 		    path:Draw()
@@ -171,6 +170,10 @@ function ENT:MoveToPos() -- Basic move to position or follow entity code
 
 
 		if ( self.UpdateRate and path:GetAge() > self.UpdateRate ) then path:Compute( self, isentity( self.MovePos ) and self.MovePos:GetPos() or self.MovePos, self.GlaceOwner:PathfindFunction(self.loco) ) end
+
+
+        path:Update( self )
+
 
 		coroutine.yield()
 
