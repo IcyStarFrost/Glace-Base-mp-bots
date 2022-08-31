@@ -155,9 +155,12 @@ function SpawnTestGlacePlayer()
                 self:Glace_AddKeyPress( IN_JUMP )
             end, "bhop", 30 ) 
 
+            -- If we can't see our enemy, then go to their position
+            local pos = self:Glace_CanSee( self:Glace_GetEnemy() ) and ( self:Glace_GetEnemy():GetPos() + self:Glace_GetNormalTo( self:Glace_GetEnemy() ) * -400 ) or self:Glace_GetEnemy():GetPos()
+
             self:Glace_Sprint( true )
             self:Glace_Face( self:Glace_GetEnemy() )
-            self:Glace_MoveToPos( ( self:Glace_GetEnemy():GetPos() + self:Glace_GetNormalTo( self:Glace_GetEnemy() ) * -400 ) )
+            self:Glace_MoveToPos( pos )
 
         elseif self:Glace_GetState() == "findmedkits" then -- Find a medkit or perish
 
