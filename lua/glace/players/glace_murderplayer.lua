@@ -179,7 +179,18 @@ function SpawnGlaceMurderPlayer()
                 for k, player in RandomPairs( targetcheck ) do
                     self.GlaceMurderTarget = player
                     self.GlaceBystanderState = "murderattackplayer"
+                    return
                 end
+
+                if self:GetLootCollected() > 0 then
+                    local ragdollcheck = self:Glace_FindInSphere( 1000, function( ent ) if ent:GetClass() == "prop_ragdoll" and self:Glace_CanSee(ent) then return true end end ) 
+    
+                    for k, rag in RandomPairs( ragdollcheck ) do
+                        self.RagdollTarget = rag
+                        self.GlaceBystanderState = "disguiseself"
+                    end
+                end
+                
 
             end
 
@@ -281,7 +292,7 @@ function SpawnGlaceMurderPlayer()
                 return
             end
 
-            if random( 1, 20 ) == 1 then
+            if random( 1, 40 ) == 1 then
                 GlaceBase_DebugPrint( "Murder target check" )
 
                 local targetcheck = self:Glace_FindInSphere( 1000, function( ent ) if ent:IsPlayer() and ent:Alive() and ent != self and self:Glace_CanSee(ent) then return true end end ) 
@@ -296,7 +307,19 @@ function SpawnGlaceMurderPlayer()
 
             end
 
-        elseif self:HasMagnum() then -- If we see the murderer, try to take the shot and kill him once and for all
+        elseif self:HasMagnum() then -- If we see the murderer, try to take the shot and kill him once and for all. Or be a troll :troll:
+
+            if !IsValid( self.GlaceMagnumTarget ) and random(1,500) == 1 then
+                local targetcheck = self:Glace_FindInSphere( 1000, function( ent ) if ent:IsPlayer() and ent:Alive() and ent != self and self:Glace_CanSee(ent) then return true end end ) 
+                
+
+                for k, ply in RandomPairs( targetcheck ) do
+                    self:Glace_CancelMove()
+                    self.GlaceMagnumTarget = ply
+                    self.GlaceBystanderState = "attackmurder"
+                end
+
+            end
 
             if IsValid( self.GlaceMagnumTarget ) then
                 if !self.GlacePullOutGunTime then
@@ -311,6 +334,8 @@ function SpawnGlaceMurderPlayer()
                     self:SetEyeAngles( ( self:Glace_GetNormalTo( self.GlaceMagnumTarget:WorldSpaceCenter() + VectorRand(-60,60) ) ):Angle() )
                     self:Glace_AddKeyPress( IN_ATTACK )
                 end
+                
+                self.GlaceBystanderState = "attackmurder"
 
                 return
             end
@@ -391,6 +416,8 @@ function SpawnGlaceMurderPlayer()
         elseif self.GlaceBystanderState == "attackmurder" then
             local target = self.GlaceMagnumTarget
 
+            if !IsValid( target ) then self.GlaceBystanderState = "wander" return end
+
             self:Glace_Sprint( true )
             self:Glace_Face( target )
             
@@ -399,7 +426,7 @@ function SpawnGlaceMurderPlayer()
             self:Glace_Sprint( false )
             self:Glace_SwitchWeapon("weapon_mu_hands")
 
-        elseif ply.GlaceBystanderState == "gettingdroppedmagnum" then
+        elseif self.GlaceBystanderState == "gettingdroppedmagnum" then
 
             local gun = self.GlaceFoundGun
 
@@ -411,6 +438,18 @@ function SpawnGlaceMurderPlayer()
 
             self.GlaceBystanderState = "wander"
             self:Glace_StopFace()
+
+        elseif self.GlaceBystanderState == "disguiseself" then
+
+
+            self:Glace_MoveToPos( self.RagdollTarget, nil, nil )
+
+            coroutine.wait( math.Rand(0,1) )
+
+            GlaceBase_DebugPrint( "Murder disguised" )
+
+            self:MurdererDisguise(self.RagdollTarget)
+            self:SetLootCollected(self:GetLootCollected() - 1)
 
         end
 
