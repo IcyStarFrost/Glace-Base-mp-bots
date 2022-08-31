@@ -116,10 +116,25 @@ function SpawnGlaceMurderPlayer()
 
     ply.GlaceBystanderState = "wander"
 
+
+    -- Since we have to create custom players inside a function, we can have local variables for each unique spawned player
+
+    local closestplayer
+    local seetime = 0
+    local murderagrochance = 200
+    local murderermemory -- This is used so the players can remember who the murder is if they saw him
+    local murderagrocurtime = 0
+    local id = ply:GetCreationID()
+
     -- We now make some murder specific functions
 
     function ply:IsMurderer() -- Returns if we are the murderer
         return self:GetMurderer()
+    end
+
+    -- If the provided entity is the murder that we've seen before
+    function ply:Glace_RememberMurderer( ent )
+        return murderermemory and ( ent:GetBystanderName() == murderermemory[1] and ent:GetPlayerColor() == murderermemory[2] ) or false
     end
 
     function ply:HasMagnum() -- Returns if we have the gun
@@ -135,29 +150,34 @@ function SpawnGlaceMurderPlayer()
     end
 
 
-
+--[[     function ply:Glace_CancelMove() 
+        GlaceBase_DebugPrint( self, " Cancelled Move \n", debug.traceback() )
+        self._GlaceAbortMove = self._GlaceIsMoving or false
+    end ]]
 
 
     function ply:Glace_OnKilled( attacker, inflictor )
         self.GlaceBystanderState = "wander"
     end 
 
+    -- All players are respawned when a new round starts so we can use this to reset some data
+    function ply:Glace_OnSpawn()
+        self.GlaceBystanderState = "wander"
+        murderagrochance = 200
+        murderermemory = nil
+        self.GlaceMurderTarget = nil
+        self.GlaceMagnumTarget = nil
+    end
+
     -- If we get stuck just move backwards for a moment and hope we get out
     function ply:Glace_OnStuck()
         GlaceBase_DebugPrint( "Player got stuck" )
 
-        self:SetCollisionGroup( COLLISION_GROUP_WORLD )
         
         self:Glace_SetForwardMove( self:GetWalkSpeed() ) 
 
         self:Glace_AddKeyPress( IN_DUCK, true )
         self:Glace_AddKeyPress( IN_JUMP ) 
-
-        self:Glace_Timer( 3, function()
-
-            self:SetCollisionGroup( COLLISION_GROUP_NONE )
-
-        end, "unstucknocollide", 1 )
 
 
         self:Glace_Timer( 1, function()
@@ -225,8 +245,9 @@ function SpawnGlaceMurderPlayer()
 
 
 
-    local closestplayer
-    local murderseetime = 0
+
+
+
 
     function ply:Glace_Think()
         if !self:Alive() or self:IsFrozen() then return end
@@ -263,6 +284,13 @@ function SpawnGlaceMurderPlayer()
 
         if self:IsMurderer() then
 
+            -- As time goes on, increase the chance the murderer will get murderous 
+            if CurTime() > murderagrocurtime then
+                murderagrochance = murderagrochance - 1
+
+                murderagrocurtime = CurTime() + 0.5
+            end
+
             if self.GlaceBystanderState == "murderattackplayer" then -- Attack the closest player 
                 local targetcheck = self:Glace_FindInSphere( 1000, function( ent ) if ent:IsPlayer() and ent:Alive() and ent != self and self:Glace_CanSee(ent) then return true end end ) 
 
@@ -276,11 +304,11 @@ function SpawnGlaceMurderPlayer()
                 end
             end
 
-            if IsValid( self.GlaceMurderTarget ) then -- When we decide to, kill someone and all witnesses
+            if IsValid( self.GlaceMurderTarget ) and self.GlaceMurderTarget:Alive() then -- When we decide to, kill someone and all witnesses
 
                 if self:Glace_CanSee( self.GlaceMurderTarget ) then
-                    murderseetime = CurTime()+6
-                elseif CurTime() > murderseetime then
+                    seetime = CurTime()+6
+                elseif CurTime() > seetime then
                     GlaceBase_DebugPrint( "Murderer lost their target" )
                     self:Glace_CancelMove()
                     self.GlaceMurderTarget = nil
@@ -306,7 +334,7 @@ function SpawnGlaceMurderPlayer()
                 return
             end
 
-            if random( 1, 60 ) == 1 then
+            if random( murderagrochance ) == 1 then
                 GlaceBase_DebugPrint( "Murder target check" )
 
                 local targetcheck = self:Glace_FindInSphere( 1000, function( ent ) if ent:IsPlayer() and ent:Alive() and ent != self and self:Glace_CanSee(ent) then return true end end ) 
@@ -335,7 +363,20 @@ function SpawnGlaceMurderPlayer()
 
             end
 
-            if IsValid( self.GlaceMagnumTarget ) then
+            if IsValid( self.GlaceMagnumTarget ) and self.GlaceMagnumTarget:Alive() then
+
+                if self:Glace_CanSee( self.GlaceMagnumTarget ) then
+                    seetime = CurTime() + 6
+                elseif CurTime() > seetime then
+
+                    GlaceBase_DebugPrint( "Player with 357 lost their target" )
+                    self:Glace_CancelMove()
+                    self.GlaceMagnumTarget = nil
+                    self.GlaceBystanderState = "wander"
+                    self:Glace_SwitchWeapon("weapon_mu_hands")
+
+                end
+
                 if !self.GlacePullOutGunTime then
                     self.GlacePullOutGunTime = CurTime()+math.Rand(0,1.5)
                 end
@@ -354,7 +395,7 @@ function SpawnGlaceMurderPlayer()
                 return
             end
 
-            local targetcheck = self:Glace_FindInSphere( 1000, function( ent ) if ent:IsPlayer() and ent:Alive() and ent != self and self:Glace_CanSee( ent ) and ( ent:GetActiveWeapon():GetClass() == "weapon_mu_knife" or ent:GetMurdererRevealed() ) then return true end end ) 
+            local targetcheck = self:Glace_FindInSphere( 1000, function( ent ) if ent:IsPlayer() and ent:Alive() and ent != self and self:Glace_CanSee( ent ) and ( ent:GetActiveWeapon():GetClass() == "weapon_mu_knife" or ent:GetMurdererRevealed() or self:Glace_RememberMurderer( ent ) ) then return true end end ) 
                 
             for k, player in ipairs( targetcheck ) do
                 self:Glace_CancelMove()
@@ -365,16 +406,23 @@ function SpawnGlaceMurderPlayer()
         else
             self.GlaceMurderTarget = nil
             self.GlaceMagnumTarget = nil
+            murderagrochance = 200
         end
 
 
 
         -- Look at a player that we can see until we get too far or look at the murderer when he is attacking
-        local plycheck = self:Glace_FindInSphere( 400, function( ent ) if ent:IsPlayer() and ent:Alive() and ent != self and self:Glace_CanSee(ent) and ( random(50) == 1 or ( ent:GetActiveWeapon():GetClass() == "weapon_mu_knife" or ent:GetMurdererRevealed() ) ) then return true end end ) 
+        local plycheck = self:Glace_FindInSphere( 1000, function( ent ) if ent:IsPlayer() and ent:Alive() and ent != self and self:Glace_CanSee(ent) and ( random(100) == 1 or ( IsValid( ent:GetActiveWeapon() ) and ent:GetActiveWeapon():GetClass() == "weapon_mu_knife" or ent:GetMurdererRevealed() ) ) then return true end end ) 
+        
 
         closestplayer = IsValid( closestplayer ) and closestplayer or self:Glace_GetClosestEnt( plycheck )
 
-        if IsValid( closestplayer ) and self:Glace_GetRangeSquaredTo( closestplayer ) <= ( 400 * 400 ) then
+        
+        if !murderermemory and IsValid( closestplayer ) and  ( closestplayer:GetActiveWeapon():IsValid() and closestplayer:GetActiveWeapon():GetClass() == "weapon_mu_knife" or closestplayer:GetMurdererRevealed() ) then
+            murderermemory = { closestplayer:GetBystanderName(), closestplayer:GetPlayerColor() }
+        end
+
+        if IsValid( closestplayer ) and self:Glace_GetRangeSquaredTo( closestplayer ) <= ( 500 * 500 ) then
             self:Glace_Face( closestplayer )
         else
             closestplayer = nil
@@ -465,6 +513,7 @@ function SpawnGlaceMurderPlayer()
             self:MurdererDisguise(self.RagdollTarget)
             self:SetLootCollected(self:GetLootCollected() - 1)
 
+            self.GlaceBystanderState = "wander"
         end
 
 
