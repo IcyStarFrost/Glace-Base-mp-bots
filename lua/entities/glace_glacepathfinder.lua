@@ -135,6 +135,7 @@ end
 
 
 function ENT:MoveToPos() -- Basic move to position or follow entity code
+    if !IsValid( self.GlaceOwner ) then return end
     if isentity( self.MovePos ) and !IsValid( self.MovePos ) then return end
     if !self.MovePos then return end
 
