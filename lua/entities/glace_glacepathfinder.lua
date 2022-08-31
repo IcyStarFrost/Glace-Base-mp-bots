@@ -190,12 +190,17 @@ function ENT:MoveToPos() -- Basic move to position or follow entity code
 	return "ok"
 end
 
+function ENT:RemoveDB()
+    GlaceBase_DebugPrint(self.GlaceOwner," Pathfinder was removed \n"..debug.traceback())
+    self:Remove()
+end
+
 function ENT:HandleStuck()
     if IsValid(self.GlaceOwner) then
         self.GlaceOwner._GlaceIsMoving = false
     end
     GlaceBase_DebugPrint("Pathfinder stuck")
-    self:Remove()
+    self:RemoveDB()
 end
 
 function ENT:Think()
@@ -209,12 +214,12 @@ function ENT:Think()
             self.GlaceOwner._GlaceIsMoving = false
         end
 
-        self:Remove()
+        self:RemoveDB()
         return
     end
 
     if self:GetRangeSquaredTo( self.GlaceOwner ) >= ( 200 * 200 ) then -- Too far away
-        self:Remove()
+        self:RemoveDB()
     end
 
 end
@@ -236,6 +241,6 @@ function ENT:RunBehaviour()
 
     if IsValid(self.GlaceOwner) then self.GlaceOwner._GlaceIsMoving = false end
 
-    self:Remove()
+    self:RemoveDB()
 
 end
