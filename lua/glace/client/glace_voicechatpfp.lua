@@ -1,4 +1,4 @@
-
+AddCSLuaFile()
 
 local meta = FindMetaTable("Panel")
 local oldfunc = meta.SetPlayer
