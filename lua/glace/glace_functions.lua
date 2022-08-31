@@ -98,6 +98,7 @@ function _GlaceSetupPlayerFunctions( ply ) -- ONLY USED IN THE Glace_CreatePlaye
             local foundents = {}
 
             for k, v in ipairs( entities ) do
+                if !IsValid( v ) then continue end
                 if v == self then continue end
 
                 if filter( v ) == true then -- Test the filter
@@ -469,7 +470,7 @@ function _GlaceSetupPlayerFunctions( ply ) -- ONLY USED IN THE Glace_CreatePlaye
     -- This must be used in the ply:Glace_ThreadedThink() function!
     function ply:Glace_MoveToPos( pos, lookahead, goaltoler, updaterate, waitforowner ) -- Makes the player move to a specified position or to a entity. 
         
-        if self:Glace_IsMoving() then self:Glace_CancelMove() end
+        self:Glace_CancelMove() -- Cancels any last movement so we can start a new one
 
         local pathfinder = ents.Create("glace_glacepathfinder") -- Create the pathfinder
         pathfinder:SetPos(self:GetPos())
