@@ -415,7 +415,7 @@ function _GlaceSetupPlayerFunctions( ply ) -- ONLY USED IN THE Glace_CreatePlaye
         return norm
     end
 
-    function ply:FindNavAreas( distance ) -- Return nav areas within this distance. I didn't like how the default finds worked
+    function ply:Glace_FindNavAreas( distance ) -- Return nav areas within this distance. I didn't like how the default finds worked
         local navs = navmesh.GetAllNavAreas()
 
         local validnavs = {}
