@@ -149,7 +149,7 @@ function SpawnTestGlacePlayer()
                 if !IsValid( self:Glace_GetEnemy() ) then return "remove" end
                 if self:Glace_GetRangeSquaredTo( self:Glace_GetEnemy() ) <= ( 200 * 200 ) then return "remove" end
                 if self:Glace_GetState() != "incombat" then return "remove" end  -- We return "remove" so that the timer will remove itself so we don't have to do it. This will be pretty useful
-                      
+                if self:GetVelocity():Length() < 200 then return end 
                 
 
                 self:Glace_AddKeyPress( IN_JUMP )
@@ -181,7 +181,7 @@ function SpawnTestGlacePlayer()
                     if !IsValid( medkit ) then return "remove" end
                     if self:Glace_GetRangeSquaredTo( medkit ) <= ( 200 * 200 ) then return "remove" end
                     if self:Glace_GetState() != "findmedkits" then return "remove" end
-                        
+                    if self:GetVelocity():Length() < 200 then return end 
                      
     
                     self:Glace_AddKeyPress( IN_JUMP )
@@ -211,7 +211,7 @@ function SpawnTestGlacePlayer()
                     if !IsValid( ammo ) then return "remove" end
                     if self:Glace_GetRangeSquaredTo( ammo ) <= ( 200 * 200 ) then return "remove" end
                     if self:Glace_GetState() != "findammo" then return "remove" end
-                        
+                    if self:GetVelocity():Length() < 200 then return end 
                      
     
                     self:Glace_AddKeyPress( IN_JUMP )
