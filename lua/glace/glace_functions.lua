@@ -437,7 +437,7 @@ function _GlaceSetupPlayerFunctions( ply ) -- ONLY USED IN THE Glace_CreatePlaye
 
 
     function ply:Glace_GetRandomPosition( distance ) -- Gets a random position within this distance
-        local navs = self:FindNavAreas( distance )
+        local navs = self:Glace_FindNavAreas( distance )
 
         for k, v in RandomPairs( navs ) do
 
