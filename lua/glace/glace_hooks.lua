@@ -127,6 +127,14 @@ end)
 hook.Add( "PlayerSpawn", "GlaceBase_PlayerSpawn", function( ply )
     if !ply.IsGlacePlayer then return end
 
+    timer.Simple( 0, function() -- Run this on the next tick just in case
+        
+        if ply._GlaceCustomModel then -- Manually reset the player's model
+            ply:SetModel(ply._GlaceCustomModel)
+        end
+
+    end)
+
     if isfunction( ply.Glace_OnSpawn ) then
         ply:Glace_OnSpawn()
     end

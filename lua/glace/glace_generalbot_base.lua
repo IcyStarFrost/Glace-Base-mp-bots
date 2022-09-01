@@ -26,6 +26,7 @@ function Glace_CreatePlayer( name, model, profilepicture )
 
         if model then
 
+            ply._GlaceCustomModel = model
             ply:SetModel( model ) -- Set the custom model
 
         end
