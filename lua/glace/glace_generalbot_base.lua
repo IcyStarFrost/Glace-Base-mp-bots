@@ -19,6 +19,8 @@ function Glace_CreatePlayer( name, model, profilepicture )
 
         ply.IsGlacePlayer = true
         ply._GlaceThinkTime = 0
+
+        -- These Queues make it easier to request multiple Key presses
         ply._GlaceKeyQueue = {}
         ply._GlaceHeldKeyQueue = {}
 
