@@ -9,7 +9,9 @@ function meta:SetPlayer(ply, size)
     if ply:GetNW2Bool( "glacebase_isglaceplayer", false ) then
 
         -- Get the Profile Picture
-        ply._GlaceBasePfpCache = ply._GlaceBasePfpCache or Material("glacebase/profilepictures/"..ply:GetNW2String("glacebase_profilepicture","default.png")) 
+        local pfp = ply._GlaceProfilePicture or "default.png"
+
+        ply._GlaceBasePfpCache = ply._GlaceBasePfpCache or Material( "glacebase/profilepictures/" .. pfp ) 
 
         function self:Paint(w, h)
             draw.RoundedBox(0, 0, 0, w, h, Color(255, 255, 255,0))
@@ -41,3 +43,15 @@ function meta:SetPlayer(ply, size)
 
     end
 end
+
+
+net.Receive( "glacebase_dispatchpfp", function()
+    local entity = net.ReadEntity()
+    local pfp = net.ReadString()
+
+    if IsValid( entity ) then
+        
+        entity._GlaceProfilePicture = pfp
+
+    end
+end )

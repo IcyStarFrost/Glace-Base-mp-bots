@@ -48,7 +48,10 @@ function Glace_CreatePlayer( name, model, profilepicture )
                     profilepicture = pfps[ math.random( #pfps ) ]
                 end
                 
-                ply:SetNW2String( "glacebase_profilepicture", profilepicture )
+                net.Start( "glacebase_dispatchpfp" )
+                    net.WriteEntity( ply )
+                    net.WriteString( profilepicture )
+                net.Broadcast()
 
             end
 
