@@ -5,8 +5,7 @@ local oldfunc = meta.SetPlayer
 
 function meta:SetPlayer(ply, size)
     if !IsValid(ply) or !ply:IsPlayer() then return end
-    
-    print(ply, ply.IsGlacePlayer)
+
 
     if ply.IsGlacePlayer then
         
