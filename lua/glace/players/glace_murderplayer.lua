@@ -458,7 +458,7 @@ function SpawnGlaceMurderPlayer()
             if IsValid( loot ) then
                 GlaceBase_DebugPrint(self, " Picked up loot" )
                 hook.Run( "PlayerPickupLoot", self, loot )
-                self:Glace_SaySoundFile( "vo/npc/male01/gotone0" .. random(1,2) .. ".wav", true )
+                self:Glace_SaySoundFile( "vo/npc/male01/gotone0" .. random(1,2) .. ".wav" )
             end
 
             self.GlaceBystanderState = "wander"
