@@ -141,7 +141,7 @@ function _GlaceSetupPlayerFunctions( ply ) -- ONLY USED IN THE Glace_CreatePlaye
 
     -- Makes the player say a sound file in voice chat and returns the duration of the file
     -- I recommend you only use .wav sound files so a accurate sound duration can be returned
-    function ply:Glace_SaySoundFile( path, bypasshook )
+    function ply:Glace_SaySoundFile( path )
         if self._GlaceIsSpeaking then return end -- So the player can't speak twice
 
         local playerscanhear = {}
@@ -157,7 +157,7 @@ function _GlaceSetupPlayerFunctions( ply ) -- ONLY USED IN THE Glace_CreatePlaye
         local dur = SoundDuration( path )
 
         for k, tbl in ipairs( playerscanhear ) do
-            if !tbl[2] and !bypasshook then GlaceBase_DebugPrint( tbl[1], " can't hear ", self ) continue end
+            if !tbl[2] then GlaceBase_DebugPrint( tbl[1], " can't hear ", self ) continue end
 
             net.Start( "glacebase_voicechat" ) -- Send the net message in glace_mpbot_autorun.lua
                 net.WriteUInt( dur, 32 ) -- Duration
