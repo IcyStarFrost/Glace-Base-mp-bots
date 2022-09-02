@@ -22,6 +22,73 @@
 -- End of notes
 
 
+
+-- We need to make the list of taunts for ourselves since Murder has the taunt table localized.
+local taunts = {}
+
+local function addTaunt(cat, soundFile, sex)
+	if !taunts[cat] then
+		taunts[cat] = {}
+	end
+	if !taunts[cat][sex] then
+		taunts[cat][sex] = {}
+	end
+	local t = {}
+	t.sound = soundFile
+	t.sex = sex
+	t.category = cat
+	table.insert(taunts[cat][sex], t)
+end
+
+// male
+addTaunt("help", "vo/npc/male01/help01.wav", "male")
+
+addTaunt("scream", "vo/npc/male01/runforyourlife01.wav", "male")
+addTaunt("scream", "vo/npc/male01/runforyourlife02.wav", "male")
+addTaunt("scream", "vo/npc/male01/runforyourlife03.wav", "male")
+addTaunt("scream", "vo/npc/male01/watchout.wav", "male")
+addTaunt("scream", "vo/npc/male01/gethellout.wav", "male")
+addTaunt("scream", "vo/k_lab/kl_ahhhh.wav", "male")
+addTaunt("scream", "vo/k_lab/kl_hedyno03.wav", "male")
+addTaunt("scream", "vo/k_lab/kl_hedyno02.wav", "male")
+addTaunt("scream", "vo/k_lab/kl_nocareful.wav", "male")
+
+addTaunt("morose", "vo/npc/female01/question31.wav", "male")
+addTaunt("morose", "vo/npc/male01/question30.wav", "male")
+addTaunt("morose", "vo/npc/male01/question20.wav", "male")
+addTaunt("morose", "vo/npc/male01/question25.wav", "male")
+addTaunt("morose", "vo/npc/male01/question15.wav", "male")
+
+addTaunt("funny", "vo/npc/male01/doingsomething.wav", "male")
+addTaunt("funny", "vo/npc/male01/busy02.wav", "male")
+addTaunt("funny", "vo/npc/male01/gordead_ques07.wav", "male")
+addTaunt("funny", "vo/npc/male01/notthemanithought01.wav", "male")
+addTaunt("funny", "vo/npc/male01/notthemanithought02.wav", "male")
+addTaunt("funny", "vo/npc/male01/question06.wav", "male")
+addTaunt("funny", "vo/npc/male01/question09.wav", "male")
+
+// female
+addTaunt("help", "vo/npc/female01/help01.wav", "female")
+
+addTaunt("scream", "vo/npc/female01/runforyourlife01.wav", "female")
+addTaunt("scream", "vo/npc/female01/runforyourlife02.wav", "female")
+addTaunt("scream", "vo/npc/female01/watchout.wav", "female")
+addTaunt("scream", "vo/npc/female01/gethellout.wav", "female")
+
+addTaunt("morose", "vo/npc/female01/question30.wav", "female")
+addTaunt("morose", "vo/npc/female01/question25.wav", "female")
+addTaunt("morose", "vo/npc/female01/question20.wav", "female")
+addTaunt("morose", "vo/npc/female01/question15.wav", "female")
+
+addTaunt("funny", "vo/npc/female01/doingsomething.wav", "female")
+addTaunt("funny", "vo/npc/female01/busy02.wav", "female")
+addTaunt("funny", "vo/npc/female01/gordead_ques07.wav", "female")
+addTaunt("funny", "vo/npc/female01/notthemanithought01.wav", "female")
+addTaunt("funny", "vo/npc/female01/notthemanithought02.wav", "female")
+addTaunt("funny", "vo/npc/female01/question06.wav", "female")
+addTaunt("funny", "vo/npc/female01/question09.wav", "female")
+
+
 -- Temporary list of names
 local names = {
     "Beta",
@@ -109,6 +176,9 @@ local names = {
 
 local random = math.random
 
+-- Create a custom convar for murder's taunts
+CreateConVar( "glacemurderbots_allowtaunts", 1, FCVAR_ARCHIVE, "If the bots are allowed to taunt or not", 0, 1 )
+
 function SpawnGlaceMurderPlayer()
     local ply = Glace_CreatePlayer( names[ random( #names ) ], nil, "GLACERANDOM" )
 
@@ -148,6 +218,25 @@ function SpawnGlaceMurderPlayer()
         end 
 
         return false
+    end
+
+    -- Murder's taunt console command translated to a function here since console commands can't be run on bots
+    function ply:Glace_muTaunt( tauntype )
+        if !GetConVar( "glacemurderbots_allowtaunts" ):GetBool() then return end
+
+        if self.LastTaunt && self.LastTaunt > CurTime() then return end
+        if !self:Alive() then return end
+        if self:Team() != 2 then return end
+    
+        if !taunts[tauntype] then return end
+    
+        local sex = string.lower(self.ModelSex or "male")
+        if !taunts[tauntype][sex] then return end
+    
+        local taunt = table.Random(taunts[tauntype][sex])
+        self:EmitSound(taunt.sound)
+    
+        self.LastTaunt = CurTime() + SoundDuration(taunt.sound) + 0.3
     end
 
 
@@ -247,7 +336,12 @@ function SpawnGlaceMurderPlayer()
 
 
 
-
+    local taunttypes = {
+        "funny",
+        "help",
+        "scream",
+        "morose"
+    }
 
 
     function ply:Glace_Think()
@@ -255,6 +349,9 @@ function SpawnGlaceMurderPlayer()
 
         self:Glace_CheckForDoors()
 
+
+        if random( 1, 200 ) == 1 then self:Glace_muTaunt( taunttypes[ random( 4 ) ] ) end
+ 
         
 
         if ply.GlaceBystanderState != "gettingloot" then
