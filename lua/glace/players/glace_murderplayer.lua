@@ -110,7 +110,7 @@ local names = {
 local random = math.random
 
 function SpawnGlaceMurderPlayer()
-    local ply = Glace_CreatePlayer( names[ random( #names ) ], nil, nil, "GLACERANDOM" )
+    local ply = Glace_CreatePlayer( names[ random( #names ) ], nil, "GLACERANDOM" )
 
     ply:Glace_SetThinkTime( 0.1 )
 
@@ -456,14 +456,16 @@ function SpawnGlaceMurderPlayer()
             coroutine.wait( math.Rand(0,1) )
 
             if IsValid( loot ) then
+                GlaceBase_DebugPrint(self, " Picked up loot" )
                 hook.Run( "PlayerPickupLoot", self, loot )
-                self:Glace_SaySoundFile( "vo/npc/male01/gotone0" .. random(1,2) .. ".wav" )
+                self:Glace_SaySoundFile( "vo/npc/male01/gotone0" .. random(1,2) .. ".wav", true )
             end
 
             self.GlaceBystanderState = "wander"
             self:Glace_StopFace()
 
         elseif self.GlaceBystanderState == "murderattackplayer" then
+            GlaceBase_DebugPrint(self, " Murderer Attacking innocents" )
             self:Glace_SwitchWeapon("weapon_mu_knife")
 
             local target = self.GlaceMurderTarget
@@ -477,6 +479,8 @@ function SpawnGlaceMurderPlayer()
 
         elseif self.GlaceBystanderState == "attackmurder" then
             local target = self.GlaceMagnumTarget
+
+            GlaceBase_DebugPrint(self, " Attacking murderer" )
 
             if !IsValid( target ) then self.GlaceBystanderState = "wander" return end
 
@@ -498,7 +502,7 @@ function SpawnGlaceMurderPlayer()
             self:Glace_MoveToPos( gun, nil, nil, nil, true )
 
             gun:SetPos( self:GetPos() )
-            GlaceBase_DebugPrint( "Grabbed Dropped gun" )
+            GlaceBase_DebugPrint(self, "Grabbed Dropped gun" )
 
             self.GlaceBystanderState = "wander"
             self:Glace_StopFace()
@@ -510,7 +514,7 @@ function SpawnGlaceMurderPlayer()
 
             coroutine.wait( math.Rand(0,1) )
 
-            GlaceBase_DebugPrint( "Murder disguised" )
+            GlaceBase_DebugPrint(self, "Murder disguised" )
 
             self:MurdererDisguise(self.RagdollTarget)
             self:SetLootCollected(self:GetLootCollected() - 1)
