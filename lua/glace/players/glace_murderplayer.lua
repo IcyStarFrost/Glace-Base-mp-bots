@@ -125,6 +125,7 @@ function SpawnGlaceMurderPlayer()
     local murderermemory -- This is used so the players can remember who the murder is if they saw him
     local murderagrocurtime = 0
     local id = ply:GetCreationID()
+    local gunpickupcooldown = 0
 
     -- We now make some murder specific functions
 
@@ -254,6 +255,8 @@ function SpawnGlaceMurderPlayer()
 
         self:Glace_CheckForDoors()
 
+        
+
         if ply.GlaceBystanderState != "gettingloot" then
 
             local lootcheck = self:Glace_FindInSphere( 1000, function( ent ) if ent:GetClass() == "mu_loot" and self:Glace_CanSee(ent) then return true end end ) 
@@ -268,7 +271,7 @@ function SpawnGlaceMurderPlayer()
 
         end
 
-        if ply.GlaceBystanderState != "gettingdroppedmagnum" and !self:IsMurderer() then -- Get the dropped gun and try to save the day
+        if ply.GlaceBystanderState != "gettingdroppedmagnum" and !self:IsMurderer() and CurTime() > gunpickupcooldown then -- Get the dropped gun and try to save the day
 
             local guncheck = self:Glace_FindInSphere( 1000, function( ent ) if ent:GetClass() == "weapon_mu_magnum" and self:Glace_CanSee(ent) and !IsValid( ent:GetOwner() ) then return true end end ) 
 
@@ -458,7 +461,6 @@ function SpawnGlaceMurderPlayer()
             if IsValid( loot ) then
                 GlaceBase_DebugPrint(self, " Picked up loot" )
                 hook.Run( "PlayerPickupLoot", self, loot )
-                self:Glace_SaySoundFile( "vo/npc/male01/gotone0" .. random(1,2) .. ".wav" )
             end
 
             self.GlaceBystanderState = "wander"
@@ -500,8 +502,9 @@ function SpawnGlaceMurderPlayer()
 
 
             self:Glace_MoveToPos( gun, nil, nil, nil, true )
+            
+            gunpickupcooldown = CurTime()+10
 
-            gun:SetPos( self:GetPos() )
             GlaceBase_DebugPrint(self, "Grabbed Dropped gun" )
 
             self.GlaceBystanderState = "wander"
