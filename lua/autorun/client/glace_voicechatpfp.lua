@@ -5,9 +5,11 @@ local oldfunc = meta.SetPlayer
 
 function meta:SetPlayer(ply, size)
     if !IsValid(ply) or !ply:IsPlayer() then return end
+    
+    print(ply, ply.IsGlacePlayer)
 
-    if ply:GetNW2Bool( "glacebase_isglaceplayer", false ) then
-
+    if ply.IsGlacePlayer then
+        
         -- Get the Profile Picture
         local pfp = ply._GlaceProfilePicture or "default.png"
 

@@ -39,7 +39,9 @@ function Glace_CreatePlayer( name, model, profilepicture )
         -- Note voice chat fadeouts will look weird. I do not know how to fix this yet
         timer.Simple( 0, function()
 
-            ply:SetNW2Bool( "glacebase_isglaceplayer", true )
+            net.Start( "glacebase_setisglacevar" )
+                net.WriteEntity( ply )
+            net.Broadcast()
 
             if profilepicture then
 
