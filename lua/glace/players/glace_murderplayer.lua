@@ -327,7 +327,10 @@ function SpawnGlaceMurderPlayer()
                     return
                 end
 
-                self:Glace_SwitchWeapon("weapon_mu_knife")
+                if self:Glace_GetRangeSquaredTo( self.GlaceMurderTarget ) < ( 150 * 150 ) then
+                    self:Glace_SwitchWeapon("weapon_mu_knife")
+                end
+
                 self.GlaceBystanderState = "murderattackplayer"
                 
                 if self:Glace_GetRangeSquaredTo( self.GlaceMurderTarget ) <= ( 100 * 100 ) then
@@ -342,7 +345,7 @@ function SpawnGlaceMurderPlayer()
 
                 local targetcheck = self:Glace_FindInSphere( 1000, function( ent ) if ent:IsPlayer() and ent:Alive() and ent != self and self:Glace_CanSee(ent) then return true end end ) 
                 
-                if #targetcheck < 3 then
+                if #targetcheck < 3 or murderagrochance < 10 then
                     for k, player in RandomPairs( targetcheck ) do
                         self:Glace_CancelMove()
                         self.GlaceMurderTarget = player
@@ -468,7 +471,10 @@ function SpawnGlaceMurderPlayer()
 
         elseif self.GlaceBystanderState == "murderattackplayer" then
             GlaceBase_DebugPrint(self, " Murderer Attacking innocents" )
-            self:Glace_SwitchWeapon("weapon_mu_knife")
+
+            if random( 1, 5 ) == 1 then
+                self:Glace_SwitchWeapon("weapon_mu_knife")
+            end
 
             local target = self.GlaceMurderTarget
 
