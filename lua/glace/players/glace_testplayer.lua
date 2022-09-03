@@ -22,6 +22,8 @@ local ammotranslation = {
 function SpawnTestGlacePlayer()
     local ply = Glace_CreatePlayer( "Avui" , nil, "GLACERANDOM" ) -- We create a Player with the name Avui with the kleiner model since the model arg is nil. We also set GLACERANDOM so he gets a random profile picture. See glace_generalbot_base.lua
 
+    if !IsValid( ply ) then print( "Unable to spawn player! Player limit may have been reached!" ) return end -- We need to make sure that we say this and end this function or else we get useless bug reports
+
     -- We now start making the AI
 
     ply:Glace_SetAutoReload( true ) -- Make the Player automatically reload when he runs out of ammo
