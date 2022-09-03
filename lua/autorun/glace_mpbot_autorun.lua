@@ -7,6 +7,7 @@ include( "glace/glace_utilityfunctions.lua" )
 if SERVER then
     util.AddNetworkString( "glacebase_voicechat" )
     util.AddNetworkString( "glacebase_setisglacevar" )
+    util.AddNetworkString( "glacebase_dispatchpfp" )
 
     include( "glace/glace_hooks.lua" )
     include( "glace/glace_generalbot_base.lua" )
