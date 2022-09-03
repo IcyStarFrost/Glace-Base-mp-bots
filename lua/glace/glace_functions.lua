@@ -479,8 +479,6 @@ function _GlaceSetupPlayerFunctions( ply ) -- ONLY USED IN THE Glace_CreatePlaye
 
     -- This must be used in the ply:Glace_ThreadedThink() function!
     function ply:Glace_MoveToPos( pos, lookahead, goaltoler, updaterate, waitforowner ) -- Makes the player move to a specified position or to a entity. 
-        
-        self:Glace_CancelMove() -- Cancels any last movement so we can start a new one
 
         local pathfinder = ents.Create("glace_glacepathfinder") -- Create the pathfinder
         pathfinder:SetPos(self:GetPos())
@@ -496,7 +494,7 @@ function _GlaceSetupPlayerFunctions( ply ) -- ONLY USED IN THE Glace_CreatePlaye
         
         self._GlacePathfinderENT = pathfinder
 
-        while IsValid(pathfinder) do -- Yield while the Pathfinder is active
+        while IsValid( pathfinder ) do -- Yield while the Pathfinder is active
             coroutine.yield()
         end
 
@@ -505,7 +503,7 @@ function _GlaceSetupPlayerFunctions( ply ) -- ONLY USED IN THE Glace_CreatePlaye
 
     -- Gmod's default pathfinding function
     -- The pathfinder uses this to calculate its pathfinding
-    -- Feel free to edit this to your liking so you can improve it's pathfinding or so.
+    -- Feel free to edit this in post player creation to your liking so you can improve it's pathfinding or so.
     function ply:PathfindFunction(loco)
         return function( area, fromArea, ladder, elevator, length )
             if ( !IsValid( fromArea ) ) then
