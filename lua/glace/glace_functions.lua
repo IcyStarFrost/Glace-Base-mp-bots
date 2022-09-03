@@ -174,6 +174,24 @@ function _GlaceSetupPlayerFunctions( ply ) -- ONLY USED IN THE Glace_CreatePlaye
         return dur
     end
 
+    -- Sets or creates a new variable on this player that will be networked to all clients when changed. This can only be called on the Server
+    function ply:Glace_SetNVar( name, newvalue )
+        self.GlaceDataTable = self.GlaceDataTable or {}
+        
+        self.GlaceDataTable[ name ] = newvalue
+        
+        net.Start( "glacebase_updatenetvar" )
+             net.WriteString( name )
+             net.WriteEntity( self )
+             net.WriteType( newvalue )
+        net.Broadcast()
+    end
+
+    -- Gets a networked value from the provided name. This function will work Client Side
+    function ply:Glace_GetNVar( name )
+        return self.GlaceDataTable[ name ] or nil
+    end
+
     ------------------------------------------------------------------------------------------
 
 

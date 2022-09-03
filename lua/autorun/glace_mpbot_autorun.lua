@@ -8,6 +8,7 @@ if SERVER then
     util.AddNetworkString( "glacebase_voicechat" )
     util.AddNetworkString( "glacebase_setisglacevar" )
     util.AddNetworkString( "glacebase_dispatchpfp" )
+    util.AddNetworkString( "glacebase_updatenetvar" )
 
     include( "glace/glace_hooks.lua" )
     include( "glace/glace_generalbot_base.lua" )
@@ -31,6 +32,20 @@ elseif CLIENT then
         ply.IsGlacePlayer = true
     end )
 
+
+    net.Receive( "glacebase_updatenetvar", function()
+        local name = net.ReadString()
+        local ply = net.ReadEntity()
+        local data = net.ReadType()
+
+        if !IsValid( ply ) then return end
+
+        ply.GlaceDataTable = ply.GlaceDataTable or {}
+
+        ply.GlaceDataTable[ name ] = data
+            
+    end )
+
 end
 
 
@@ -38,6 +53,12 @@ end
 
 local meta = FindMetaTable( "Player" )
 local oldisspeaking = meta.IsSpeaking
+
+
+function meta:Glace_GetNVar( name )
+    return self.GlaceDataTable[ name ] or nil
+end
+    
 
 function meta:IsSpeaking()
     if self:GetNW2Bool( "glacebase_isglaceplayer", false ) then
