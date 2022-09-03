@@ -182,6 +182,8 @@ CreateConVar( "glacemurderbots_allowtaunts", 1, FCVAR_ARCHIVE, "If the bots are 
 function SpawnGlaceMurderPlayer()
     local ply = Glace_CreatePlayer( names[ random( #names ) ], nil, "GLACERANDOM" )
 
+    if !IsValid( ply ) then print( "Unable to spawn player! Player limit may have been reached!" ) return end
+
     ply:Glace_SetThinkTime( 0.1 )
 
     ply.GlaceBystanderState = "wander"
@@ -233,7 +235,7 @@ function SpawnGlaceMurderPlayer()
     end
 
 
-
+    -- Trying to AddKeyPress for Right clicks wouldn't be very reliable so we just copy the function here
     function ply:ThrowKnife(force)
         local ent = ents.Create("mu_knife")
         ent:SetOwner(self)
@@ -325,13 +327,13 @@ function SpawnGlaceMurderPlayer()
     function ply:Glace_OnOtherKilled( victim, attacker, inflictor )
         if self:IsMurderer() then
 
+
+            -- If we kill our target, Attack any people we see or go back to the wander state
             if victim == self.GlaceMurderTarget then
                 self:Glace_CancelMove()
 
                 self.GlaceMurderTarget = nil
                 self.GlaceBystanderState = "wander"
-
-                self:Glace_SwitchWeapon( "weapon_mu_hands" )
 
                 local targetcheck = self:Glace_FindInSphere( 1000, function( ent ) if ent:IsPlayer() and ent:Alive() and ent != self and self:Glace_CanSee(ent) then return true end end ) 
                 
@@ -340,6 +342,12 @@ function SpawnGlaceMurderPlayer()
                     self.GlaceBystanderState = "murderattackplayer"
                     return
                 end
+
+                self:Glace_Timer( math.Rand( 0, 1 ), function()
+
+                    self:Glace_SwitchWeapon( "weapon_mu_hands" )
+                    
+                end)
 
                 if self:GetLootCollected() > 0 then
                     local ragdollcheck = self:Glace_FindInSphere( 1000, function( ent ) if ent:GetClass() == "prop_ragdoll" and self:Glace_CanSee(ent) then return true end end ) 
@@ -356,12 +364,19 @@ function SpawnGlaceMurderPlayer()
 
         elseif self:HasMagnum() then
 
+            -- Go back to normal after the murderer is dead
             if victim == self.GlaceMagnumTarget then
 
                 self:Glace_CancelMove()
                 self.GlaceMagnumTarget = nil
                 self.GlaceBystanderState = "wander"
-                self:Glace_SwitchWeapon("weapon_mu_hands")
+
+                self:Glace_Timer( math.Rand( 0, 1 ), function()
+
+                    self:Glace_SwitchWeapon("weapon_mu_hands")
+                    
+                end)
+                
             end
 
         end
@@ -385,7 +400,7 @@ function SpawnGlaceMurderPlayer()
         self:Glace_CheckForDoors()
 
 
-        if random( 1, 200 ) == 1 then self:Glace_muTaunt( taunttypes[ random( 4 ) ] ) end
+        if random( 1, 200 ) == 1 then self:Glace_muTaunt( taunttypes[ random( 4 ) ] ) end -- Randomly use taunts
  
 
         if self.GlaceBystanderState != "gettingdroppedmagnum" and !self:IsMurderer() and CurTime() > gunpickupcooldown then -- Get the dropped gun and try to save the day
@@ -413,7 +428,7 @@ function SpawnGlaceMurderPlayer()
 
 
             
-            
+            -- If we have thrown our knife, go get it back
             if self.GlaceBystanderState != "gettingdroppedknife" then
                 local knifecheck = self:Glace_FindInSphere( 1500, function( ent ) if ent:GetClass() == "weapon_mu_knife" and !IsValid( ent:GetOwner() ) then return true end end ) 
                     
@@ -433,6 +448,8 @@ function SpawnGlaceMurderPlayer()
 
             if !self:HasKnife() then return end
 
+
+            -- Throw our knife if we want to
             if IsValid( self:GetActiveWeapon() ) and self:GetActiveWeapon():GetClass() == "weapon_mu_knife" and random(1,100) == 1 then
                 GlaceBase_DebugPrint(self, " Throwing knife" )
                 self:ThrowKnife( math.Rand( 0, 1 ) )
@@ -474,12 +491,14 @@ function SpawnGlaceMurderPlayer()
                     return
                 end
 
+                -- Conceal knife until we are close to our target
                 if self:Glace_GetRangeSquaredTo( self.GlaceMurderTarget ) < ( 150 * 150 ) then
                     self:Glace_SwitchWeapon("weapon_mu_knife")
                 end
 
                 self.GlaceBystanderState = "murderattackplayer"
                 
+                -- Attack the target
                 if self:Glace_GetRangeSquaredTo( self.GlaceMurderTarget ) <= ( 100 * 100 ) then
                     self:Glace_AddKeyPress( IN_ATTACK ) 
                 end
@@ -487,6 +506,7 @@ function SpawnGlaceMurderPlayer()
                 return
             end
             
+            -- Find someone to attack passively
             if random( murderagrochance ) == 1 then
                 GlaceBase_DebugPrint( "Murder target check" )
 
@@ -669,6 +689,7 @@ function SpawnGlaceMurderPlayer()
             self:Glace_Face( gun )
 
             self:Glace_Timer( 0.1, function()
+                if !IsValid( gun ) or self.GlaceBystanderState != "gettingdroppedmagnum" then return "remove" end
 
                 if IsValid( gun:GetOwner() ) then self:Glace_CancelMove() return "remove" end
             
@@ -706,6 +727,7 @@ function SpawnGlaceMurderPlayer()
             self:Glace_Face( knife )
 
             self:Glace_Timer( 0.1, function()
+                if !IsValid( gun ) or self.GlaceBystanderState != "gettingdroppedmagnum" then return "remove" end
 
                 if IsValid( knife:GetOwner() ) then self:Glace_CancelMove() return "remove" end
             
