@@ -665,7 +665,6 @@ function SpawnGlaceMurderPlayer()
             self:Glace_MoveToPos( target, nil, nil, 0.1, true )
             self:Glace_StopFace()
             self:Glace_Sprint( false )
-            self:Glace_SwitchWeapon("weapon_mu_hands")
 
         elseif self.GlaceBystanderState == "attackmurder" then
             local target = self.GlaceMagnumTarget
@@ -680,7 +679,7 @@ function SpawnGlaceMurderPlayer()
             self:Glace_MoveToPos( self:Glace_CanSee( target ) and ( target:GetPos() + self:Glace_GetNormalTo( target ) * -200 ) or target:GetPos(), nil, nil )
             self:Glace_StopFace()
             self:Glace_Sprint( false )
-            self:Glace_SwitchWeapon("weapon_mu_hands")
+            
 
         elseif self.GlaceBystanderState == "gettingdroppedmagnum" then
 
