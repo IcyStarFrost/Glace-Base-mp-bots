@@ -466,7 +466,23 @@ function _GlaceSetupPlayerFunctions( ply ) -- ONLY USED IN THE Glace_CreatePlaye
         end
     end
 
-    local tracetbl = {} -- Create the table once so we can recycle it without creating tables everytime this function is called
+    -- See https://wiki.facepunch.com/gmod/CNavArea:GetHidingSpots for valid types
+    -- This will return a table of tables of vectors
+    function ply:Glace_FindSpots( distance, type )
+        local navs = self:Glace_FindNavAreas( distance )
+        local spots = {}
+
+        for k, v in ipairs( navs ) do
+            if !IsValid( v ) then continue end
+
+            spots[ #spots + 1 ] = v:GetHidingSpots( type )
+
+        end
+
+        return spots
+    end
+
+
 
     -- If the player can see the entity in their field of view
     function ply:Glace_CanSee( ent )
