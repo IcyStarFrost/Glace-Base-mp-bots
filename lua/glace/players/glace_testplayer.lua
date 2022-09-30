@@ -80,16 +80,13 @@ function SpawnTestGlacePlayer()
 
     end
 
-    ply:Glace_Timer( 2, function()
-        ply:Glace_SaySoundFile( "vo/breencast/br_instinct01.wav" )
-    end)
 
     -- Now we create our normal Think hook
     function ply:Glace_Think()
 
---[[         if random(30) == 1 then
+        if random( 50 ) == 1 then
             self:Glace_SaySoundFile( "vo/breencast/br_instinct01.wav" )
-        end ]]
+        end
 
         if self:Health() < self:GetMaxHealth()*0.4 and self:Glace_GetState() != "findmedkits" then -- I NEED A MEDIC BAG
             self:Glace_SetState("findmedkits")
