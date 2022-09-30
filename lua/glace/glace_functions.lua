@@ -157,14 +157,14 @@ function _GlaceSetupPlayerFunctions( ply ) -- ONLY USED IN THE Glace_CreatePlaye
         local dur = SoundDuration( path )
 
         for k, tbl in ipairs( playerscanhear ) do
-            if !tbl[2] then GlaceBase_DebugPrint( tbl[1], " can't hear ", self ) continue end
+            --if !tbl[2] then GlaceBase_DebugPrint( tbl[1], " can't hear ", self ) continue end
 
             net.Start( "glacebase_voicechat" ) -- Send the net message in glace_mpbot_autorun.lua
                 net.WriteUInt( dur, 32 ) -- Duration
-                net.WriteString(path) -- File path
-                net.WriteEntity(self) -- The Player entity which is ourselves
-                net.WriteBool(tbl[3] or false) -- If the sound should be 3d
-            net.Send(tbl[1])
+                net.WriteString( path ) -- File path
+                net.WriteEntity( self ) -- The Player entity which is ourselves
+                net.WriteBool( tbl[3] or false ) -- If the sound should be 3d
+            net.Send( tbl[1] )
         end
 
         self:Glace_Timer( dur, function()  

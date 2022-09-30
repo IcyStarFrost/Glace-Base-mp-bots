@@ -2,6 +2,7 @@
 local meta = FindMetaTable("Panel")
 local oldfunc = meta.SetPlayer
 
+print("Glace: Voice chat PFP Set up")
 
 function meta:SetPlayer(ply, size)
     if !IsValid(ply) or !ply:IsPlayer() then return end
