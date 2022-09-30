@@ -58,6 +58,7 @@ elseif CLIENT then
         local filename = net.ReadString()
         local ply = net.ReadEntity()
         local _3d = net.ReadBool()
+        local noicon = net.ReadBool()
 
 
         GlaceBase_DebugPrint("Voice Chat Receive")
@@ -69,22 +70,26 @@ elseif CLIENT then
 
         local id = ply:EntIndex()
 
-        hook.Add( "PreDrawEffects", "GlaceBase_VoiceChatIcon" .. id, function()
-            if !IsValid(ply) then hook.Remove( "PreDrawEffects", "GlaceBase_VoiceChatIcon" .. id ) return end
+        if !noicon then
 
-                local ang = EyeAngles()
-                local pos = ply:GetPos() + Vector(0, 0, 80)
+            hook.Add( "PreDrawEffects", "GlaceBase_VoiceChatIcon" .. id, function()
+                if !IsValid(ply) then hook.Remove( "PreDrawEffects", "GlaceBase_VoiceChatIcon" .. id ) return end
 
-                ang:RotateAroundAxis(ang:Up(), -90)
-                ang:RotateAroundAxis(ang:Forward(), 90)
-        
-                cam.Start3D2D( pos, ang, 1 )
-                    surface.SetMaterial( voiceicon )
-                    surface.SetDrawColor( 255, 255, 255 )
-                    surface.DrawTexturedRect( -8, -8, 16, 16 )
-                cam.End3D2D()
+                    local ang = EyeAngles()
+                    local pos = ply:GetPos() + Vector(0, 0, 80)
+
+                    ang:RotateAroundAxis(ang:Up(), -90)
+                    ang:RotateAroundAxis(ang:Forward(), 90)
             
-        end)
+                    cam.Start3D2D( pos, ang, 1 )
+                        surface.SetMaterial( voiceicon )
+                        surface.SetDrawColor( 255, 255, 255 )
+                        surface.DrawTexturedRect( -8, -8, 16, 16 )
+                    cam.End3D2D()
+                
+            end)
+
+        end
 
         local flags = !_3d and "" or "3d mono" -- If the sound should be 3d or not
 

@@ -141,7 +141,7 @@ function _GlaceSetupPlayerFunctions( ply ) -- ONLY USED IN THE Glace_CreatePlaye
 
     -- Makes the player say a sound file in voice chat and returns the duration of the file
     -- I recommend you only use .wav sound files so a accurate sound duration can be returned
-    function ply:Glace_SaySoundFile( path, bypasshook ) -- path STRING | The sound path to say   bypasshook BOOL | If the function shouldn't test the Can hear hook
+    function ply:Glace_SaySoundFile( path, bypasshook, noicon ) -- path STRING | The sound path to say   bypasshook BOOL | If the function shouldn't test the Can hear hook   noicon BOOL | If the player should have a voice icon above their head
         if self._GlaceIsSpeaking then return end -- So the player can't speak twice
 
         local playerscanhear = {}
@@ -164,6 +164,7 @@ function _GlaceSetupPlayerFunctions( ply ) -- ONLY USED IN THE Glace_CreatePlaye
                 net.WriteString( path ) -- File path
                 net.WriteEntity( self ) -- The Player entity which is ourselves
                 net.WriteBool( tbl[3] or false ) -- If the sound should be 3d
+                net.WriteBool( noicon or false ) -- If the Player should have a speaker icon above their head
             net.Send( tbl[1] )
         end
 
