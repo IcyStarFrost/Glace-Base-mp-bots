@@ -99,13 +99,14 @@ function ENT:CornerCheck() -- Check the corners
     self.cornerchecktbls.endpos = self:GetPos()+self:GetForward()*hullmaxs.x+self:GetRight()*hullmaxs.y+Vector(0,0,20)
     self.cornerchecktbls.mins = collmins
     self.cornerchecktbls.maxs = collmaxs
-    self.cornerchecktbls.filter = self.cornerchecktbls.filter or {self,self.GlaceOwner}
+    self.cornerchecktbls.filter = {self,self.GlaceOwner}
     local tr1 = TraceHull(self.cornerchecktbls)
 
     self.cornerchecktbls.start = self:GetPos()+self:GetForward()*hullmaxs.x+self:GetRight()*-hullmaxs.y+Vector(0,0,20)
     self.cornerchecktbls.endpos = self:GetPos()+self:GetForward()*hullmaxs.x+self:GetRight()*-hullmaxs.y+Vector(0,0,20)
     self.cornerchecktbls.mins = collmins
     self.cornerchecktbls.maxs = collmaxs
+    self.cornerchecktbls.filter = {self,self.GlaceOwner}
 
     local tr2 = TraceHull(self.cornerchecktbls)
 
@@ -113,6 +114,7 @@ function ENT:CornerCheck() -- Check the corners
     self.cornerchecktbls.endpos = self:GetPos()+self:GetForward()*-hullmaxs.x+self:GetRight()*hullmaxs.y+Vector(0,0,20)
     self.cornerchecktbls.mins = collmins
     self.cornerchecktbls.maxs = collmaxs
+    self.cornerchecktbls.filter = {self,self.GlaceOwner}
 
     local tr3 = TraceHull(self.cornerchecktbls)
 
@@ -120,6 +122,7 @@ function ENT:CornerCheck() -- Check the corners
     self.cornerchecktbls.endpos = self:GetPos()+Vector(-hullmaxs.x,-hullmaxs.y,20)
     self.cornerchecktbls.mins = collmins
     self.cornerchecktbls.maxs = collmaxs
+    self.cornerchecktbls.filter = {self,self.GlaceOwner}
 
     local tr4 = TraceHull(self.cornerchecktbls)
 
