@@ -96,6 +96,9 @@ elseif CLIENT then
         sound.PlayFile( "sound/" .. filename, flags, function( snd, errorid, errorname )
             if errorid and errorname then
                 print(errorname,errorid)
+                hook.Remove("Think", "GlaceBase_VoiceChat3dThink" .. id)
+                hook.Remove( "PreDrawEffects", "GlaceBase_VoiceChatIcon" .. id )
+                hook.Run( "PlayerEndVoice", ply )
                 return
             end
 
